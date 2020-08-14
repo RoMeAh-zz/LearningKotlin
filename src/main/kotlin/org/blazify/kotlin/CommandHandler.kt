@@ -1,10 +1,10 @@
 package org.blazify.kotlin
 
-import org.blazify.kotlin.Command.Commands.Ping
+import org.blazify.kotlin.command.commands.utility.Ping
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
-import org.blazify.kotlin.Command.BaseCommand
-import org.blazify.kotlin.Command.CommandContext
-import org.blazify.kotlin.Config.get
+import org.blazify.kotlin.command.BaseCommand
+import org.blazify.kotlin.command.CommandContext
+import org.blazify.kotlin.command.commands.music.Join
 import java.util.*
 import java.util.regex.Pattern
 
@@ -29,8 +29,8 @@ class CommandHandler {
 
     fun handle(event: GuildMessageReceivedEvent) {
         val split = event.message.contentRaw
-                .replaceFirst("(?i)" + Pattern.quote(get("prefix")).toRegex(), "")
-                .split("\\s+").toTypedArray()
+                .replaceFirst(Pattern.quote(Config["prefix"]).toRegex(), "")
+                .split(" ").toTypedArray();
         val invoke = split[0].toLowerCase()
         val cmd = getCommand(invoke)
         if (cmd != null) {
@@ -41,8 +41,9 @@ class CommandHandler {
         }
     }
 
-    init {
+    fun init() {
         addCommand(Ping())
+        addCommand(Join())
     }
 }
 

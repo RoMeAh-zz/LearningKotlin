@@ -5,7 +5,8 @@ plugins {
 }
 
 repositories {
-    jcenter()
+    jcenter();
+    maven { url =  uri("https://jitpack.io") }
 }
 
 dependencies {
@@ -18,8 +19,20 @@ dependencies {
     implementation("me.duncte123:botCommons:1.0.88")
     implementation("ch.qos.logback:logback-classic:1.2.3")
     implementation("io.github.cdimascio:java-dotenv:5.1.1")
+    implementation("com.github.FredBoat:Lavalink-Client:4.0")
+}
+
+tasks {
+    compileKotlin {
+        kotlinOptions.jvmTarget = "1.8"
+    }
+
+    compileTestKotlin {
+        kotlinOptions.jvmTarget = "1.8"
+    }
 }
 
 application {
     mainClassName = "org.blazify.kotlin.BotKt"
 }
+
