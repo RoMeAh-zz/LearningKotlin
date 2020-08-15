@@ -47,7 +47,7 @@ class TrackScheduler(player: AudioPlayer?): AudioEventAdapter() {
     }
 
     override fun onTrackException(player: AudioPlayer?, track: AudioTrack?, exception: FriendlyException?) {
-        super.onTrackException(player, track, exception)
+        return print("Player: ${player}\nTrack: ${track}\nException: ${exception} ")
     }
 
     override fun onTrackStart(player: AudioPlayer?, track: AudioTrack?) {

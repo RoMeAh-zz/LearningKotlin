@@ -1,6 +1,5 @@
 package blazify.command.commands.music
 
-import blazify.Bot
 import blazify.command.BaseCommand
 import blazify.command.CommandContext
 
@@ -11,7 +10,7 @@ class Leave: BaseCommand {
             return;
         }
 
-        Bot.lavalink.getExistingLink(ctx.guild)?.disconnect()
+
         ctx.channel.sendMessage("Bye Bye :wave: I left the voice Channel...")
     }
 

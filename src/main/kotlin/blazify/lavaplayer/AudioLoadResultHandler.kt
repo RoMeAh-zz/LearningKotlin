@@ -17,7 +17,9 @@ class AudioLoadResultHandler(var musicManager: GuildMusicManager, var channel: T
             channel.sendMessage("Adding to queue: `")
                     .append(track.info.title)
                     .append("` by `")
-                    .append(track.info.author).queue()
+                    .append(track.info.author)
+                    .append("`")
+                    .queue()
         }
     }
 

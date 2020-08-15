@@ -1,13 +1,11 @@
 package blazify
 
-import lavalink.client.io.jda.JdaLavalink
 import net.dv8tion.jda.api.OnlineStatus
 import net.dv8tion.jda.api.entities.Activity.playing
+import net.dv8tion.jda.api.requests.GatewayIntent
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder
 import net.dv8tion.jda.api.sharding.ShardManager
-import java.net.URI
-
-
+import net.dv8tion.jda.api.utils.cache.CacheFlag
 
 
 fun main() {
@@ -17,31 +15,36 @@ fun main() {
 
 class Bot {
        fun run() {
-              lavalink = JdaLavalink(
-                      "722834420226195517",
-                      1
-              ) { sharder.getShardById(it) }
-
-              sharder = DefaultShardManagerBuilder.createDefault(Config["token"])
-                      .setActivityProvider { playing("on shard $it") }
-                      .addEventListeners(Listener(), lavalink)
-                      .setVoiceDispatchInterceptor(lavalink.voiceInterceptor)
+              sharder = DefaultShardManagerBuilder
+                      .createDefault(
+                              Config["token"],
+                              GatewayIntent.GUILD_MESSAGES,
+                              GatewayIntent.GUILD_MEMBERS,
+                              GatewayIntent.GUILD_VOICE_STATES,
+                              GatewayIntent.GUILD_EMOJIS
+                      )
+                      .disableCache(
+                              CacheFlag.CLIENT_STATUS,
+                              CacheFlag.ACTIVITY
+                      )
+                      .enableCache(
+                              CacheFlag.VOICE_STATE
+                      )
+                      .setActivityProvider {
+                             playing("on shard $it")
+                      }
+                      .addEventListeners(
+                              Listener()
+                      )
                       .setAutoReconnect(true)
                       .setShardsTotal(1)
                       .setShards()
-                      .setStatus(OnlineStatus.DO_NOT_DISTURB)
+                      .setStatus(
+                              OnlineStatus.DO_NOT_DISTURB
+                      )
                       .build()
-
-              lavalink = JdaLavalink(
-                      "722834420226195517",
-                      1
-              ) { sharder.getShardById(it) }
-
-
-              Config["node_password"].let { lavalink.addNode(URI(Config["node_uri"]), it) }
        }
        companion object {
-              lateinit var lavalink: JdaLavalink
               lateinit var sharder: ShardManager
        }
 }
