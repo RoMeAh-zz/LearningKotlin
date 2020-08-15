@@ -1,15 +1,15 @@
-package org.blazify.kotlin.command.commands.utility
+package blazify.command.commands.utility
 
-import org.blazify.kotlin.command.CommandContext
+import blazify.command.CommandContext
 import net.dv8tion.jda.api.JDA
-import org.blazify.kotlin.command.BaseCommand
+import blazify.command.BaseCommand
 
  class Ping : BaseCommand {
     override fun handle(ctx: CommandContext) {
         val jda: JDA = ctx.jda
         jda.restPing.queue { ping: Long? ->
             ctx.channel
-                    .sendMessage("Reset ping: ${ping}\nWS ping: ${jda.gatewayPing}").queue()
+                    .sendMessage("Reset ping: ${ping}ms\nWS ping: ${jda.gatewayPing}ms").queue()
         }
     }
 

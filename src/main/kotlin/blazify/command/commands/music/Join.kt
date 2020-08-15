@@ -1,18 +1,21 @@
-package org.blazify.kotlin.command.commands.music
+package blazify.command.commands.music
 
-import lavalink.client.io.jda.JdaLink
-import org.blazify.kotlin.Bot
-import org.blazify.kotlin.command.BaseCommand
-import org.blazify.kotlin.command.CommandContext
+
+import blazify.Bot
+import blazify.command.BaseCommand
+import blazify.command.CommandContext
+
 
 class Join: BaseCommand {
+
     override fun handle(ctx: CommandContext) {
+
         if (!ctx.event.member?.voiceState?.inVoiceChannel()!!) {
             ctx.channel.sendMessage("Please Join a Voice Channel in which i should connect...").queue()
             return;
         }
-        var link: JdaLink? = Bot().lavalink?.getLink(ctx.guild)
-        link?.connect(ctx.event.member!!.voiceState?.channel)
+      Bot.lavalink.getLink(ctx.guild).connect(ctx.event.member!!.voiceState?.channel)
+        ctx.channel.sendMessage("Yeet i joined the voice channel!")
     }
 
     override fun name(): String {

@@ -20,6 +20,7 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:1.2.3")
     implementation("io.github.cdimascio:java-dotenv:5.1.1")
     implementation("com.github.FredBoat:Lavalink-Client:4.0")
+    implementation("org.mongodb:mongodb-driver-legacy:4.0.5")
 }
 
 tasks {
@@ -33,6 +34,5 @@ tasks {
 }
 
 application {
-    mainClassName = "org.blazify.kotlin.BotKt"
+    mainClassName = "blazify.BotKt"
 }
-

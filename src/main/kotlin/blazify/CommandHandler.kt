@@ -1,10 +1,12 @@
-package org.blazify.kotlin
+package blazify
 
-import org.blazify.kotlin.command.commands.utility.Ping
+import blazify.command.commands.utility.Ping
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
-import org.blazify.kotlin.command.BaseCommand
-import org.blazify.kotlin.command.CommandContext
-import org.blazify.kotlin.command.commands.music.Join
+import blazify.command.BaseCommand
+import blazify.command.CommandContext
+import blazify.command.commands.music.Join
+import blazify.command.commands.music.Leave
+import blazify.command.commands.music.Play
 import java.util.*
 import java.util.regex.Pattern
 
@@ -35,7 +37,7 @@ class CommandHandler {
         val cmd = getCommand(invoke)
         if (cmd != null) {
             event.channel.sendTyping().queue()
-            val args: List<String> = listOf(*split).subList(1, split.size)
+            val args: Array<String> = arrayOf(*split)
             val ctx = CommandContext(event, args)
             cmd.handle(ctx)
         }
@@ -44,6 +46,8 @@ class CommandHandler {
     fun init() {
         addCommand(Ping())
         addCommand(Join())
+        addCommand(Leave())
+        addCommand(Play())
     }
 }
 

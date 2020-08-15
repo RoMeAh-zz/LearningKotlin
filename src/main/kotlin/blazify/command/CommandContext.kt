@@ -1,4 +1,4 @@
-package org.blazify.kotlin.command
+package blazify.command
 
 import me.duncte123.botcommons.commands.ICommandContext
 import net.dv8tion.jda.api.entities.Guild
@@ -6,7 +6,7 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 
 class CommandContext(
         private val event: GuildMessageReceivedEvent,
-        private val args: List<String>
+        private val args: Array<String>
 ) : ICommandContext {
     override fun getGuild(): Guild {
         return getEvent().guild
@@ -16,7 +16,7 @@ class CommandContext(
         return event
     }
 
-    fun args(): List<String> {
+    fun args(): Array<String> {
         return args
     }
 

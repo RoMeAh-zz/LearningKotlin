@@ -1,4 +1,4 @@
-package org.blazify.kotlin.command
+package blazify.command
 
 interface BaseCommand {
     fun handle(ctx: CommandContext)
