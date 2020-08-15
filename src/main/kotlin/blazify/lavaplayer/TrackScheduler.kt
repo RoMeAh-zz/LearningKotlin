@@ -1,4 +1,4 @@
-package blazify
+package blazify.lavaplayer
 
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEvent
@@ -13,14 +13,10 @@ import java.util.concurrent.LinkedBlockingQueue
 
 
 
-class TrackScheduler: AudioEventAdapter() {
-    private final lateinit var player: AudioPlayer;
-    private final lateinit var queue: BlockingQueue<AudioTrack>
+class TrackScheduler(player: AudioPlayer?): AudioEventAdapter() {
+    private final var player: AudioPlayer = player!!;
+    private final var queue: BlockingQueue<AudioTrack> = LinkedBlockingQueue()
 
-    fun TrackScheduler(player: AudioPlayer?) {
-        this.player = player!!
-        queue = LinkedBlockingQueue()
-    }
     fun nextTrack() {
         this.player.startTrack(this.queue.poll(), false)
     }
