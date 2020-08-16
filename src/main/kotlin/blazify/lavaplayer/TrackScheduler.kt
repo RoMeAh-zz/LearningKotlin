@@ -8,9 +8,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason
 import java.util.concurrent.BlockingQueue
 import java.util.concurrent.LinkedBlockingQueue
-
-
-
+import java.util.concurrent.TimeUnit
 
 
 class TrackScheduler(player: AudioPlayer?): AudioEventAdapter() {
@@ -22,7 +20,7 @@ class TrackScheduler(player: AudioPlayer?): AudioEventAdapter() {
     }
 
     fun queue(track: AudioTrack?) {
-        if(!this.player.startTrack(track, true)) {
+        if(this.player.startTrack(track, true)) {
             this.queue.offer(track);
         }
     }
@@ -42,6 +40,8 @@ class TrackScheduler(player: AudioPlayer?): AudioEventAdapter() {
         if (endReason != null) {
             if(endReason.mayStartNext) {
                 nextTrack()
+            } else if(this.queue.size == 0) {
+                this.player.destroy()
             }
         }
     }

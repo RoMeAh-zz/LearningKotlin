@@ -8,7 +8,7 @@ import net.dv8tion.jda.api.entities.TextChannel
 
 class PlayerManager {
     private var INSTANCE: PlayerManager? = null;
-    private var musicManagers: Map<Long, GuildMusicManager> = HashMap()
+    private var musicManagers: MutableMap<Long, GuildMusicManager> = HashMap()
     private var audioPlayerManager: AudioPlayerManager = DefaultAudioPlayerManager()
 
     init {
@@ -17,16 +17,18 @@ class PlayerManager {
     }
 
     private fun musicManager(guild: Guild): GuildMusicManager {
-        var guildMusicManager: GuildMusicManager = GuildMusicManager(this.audioPlayerManager)
-        guild.audioManager.sendingHandler = guildMusicManager.sendHandler
-        return this.musicManagers.getOrDefault(guild.idLong, guildMusicManager)
+        return musicManagers.computeIfAbsent(guild.idLong) { guildId: Long? ->
+            val guildMusicManager = GuildMusicManager(audioPlayerManager)
+            guild.audioManager.sendingHandler = guildMusicManager.sendHandler
+            guildMusicManager
+        }
     }
 
     fun loadAndPlay(channel: TextChannel, trackUrl: String) {
         val musicManager: GuildMusicManager = this.musicManager(channel.guild)
         this.audioPlayerManager.loadItemOrdered(musicManager, trackUrl, AudioLoadResultHandler(musicManager, channel))
-
     }
+
     fun instance(): PlayerManager? {
         if(INSTANCE == null) {
             INSTANCE = PlayerManager()
