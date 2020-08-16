@@ -14,7 +14,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
-    implementation ("net.dv8tion:JDA:4.1.1_165")
+    implementation ("net.dv8tion:JDA:4.2.0_191")
     implementation("com.jagrosh:jda-utilities:3.0.4")
     implementation("me.duncte123:botCommons:1.0.88")
     implementation("ch.qos.logback:logback-classic:1.2.3")

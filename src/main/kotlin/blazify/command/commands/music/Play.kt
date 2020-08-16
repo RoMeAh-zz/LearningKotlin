@@ -20,8 +20,7 @@ class Play: BaseCommand {
             return;
         }
 
-        PlayerManager().instance()
-        PlayerManager().loadAndPlay(ctx.channel, ctx.args()[1])
+        PlayerManager().instance()?.loadAndPlay(ctx.channel, ctx.args()[1])
     }
 
     override fun name(): String {
