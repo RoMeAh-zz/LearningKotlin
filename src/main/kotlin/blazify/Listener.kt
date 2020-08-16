@@ -14,14 +14,14 @@ class Listener : ListenerAdapter() {
     }
 
     override fun onGuildMessageReceived(event: GuildMessageReceivedEvent) {
-        val prefix: String? = Config["prefix"]
+        val prefix: String = Config.prefix
         val raw: String = event.message.contentRaw
         val user: User = event.author
 
         if(user.isBot || event.isWebhookMessage) {
             return
         }
-        if(prefix?.let { raw.startsWith(it, true) }!!) manager.handle(event)
+        if(raw.startsWith(prefix, true)) manager.handle(event)
     }
 
     companion object {

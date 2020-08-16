@@ -18,9 +18,9 @@ dependencies {
     implementation("com.jagrosh:jda-utilities:3.0.4")
     implementation("me.duncte123:botCommons:1.0.88")
     implementation("ch.qos.logback:logback-classic:1.2.3")
-    implementation("io.github.cdimascio:java-dotenv:5.1.1")
     implementation("com.sedmelluq:lavaplayer:1.3.50")
     implementation("org.mongodb:mongodb-driver-legacy:4.0.5")
+    implementation("com.google.apis:google-api-services-youtube:v3-rev222-1.25.0")
 }
 
 tasks {

@@ -2,4 +2,4 @@
 .gradle
 .git
 build
-.env
+Config.kt

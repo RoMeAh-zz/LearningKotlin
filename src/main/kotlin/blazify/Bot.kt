@@ -17,7 +17,7 @@ class Bot {
        fun run() {
               sharder = DefaultShardManagerBuilder
                       .createDefault(
-                              Config["token"],
+                              Config.token,
                               GatewayIntent.GUILD_MESSAGES,
                               GatewayIntent.GUILD_MEMBERS,
                               GatewayIntent.GUILD_VOICE_STATES,
@@ -37,8 +37,9 @@ class Bot {
                               Listener()
                       )
                       .setAutoReconnect(true)
-                      .setShardsTotal(1)
-                      .setShards()
+                      .setShardsTotal(
+                              Config.totalShards
+                      )
                       .setStatus(
                               OnlineStatus.DO_NOT_DISTURB
                       )

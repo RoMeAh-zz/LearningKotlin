@@ -31,7 +31,7 @@ class CommandHandler {
 
     fun handle(event: GuildMessageReceivedEvent) {
         val split = event.message.contentRaw
-                .replaceFirst(Pattern.quote(Config["prefix"]).toRegex(), "")
+                .replaceFirst(Pattern.quote(Config.prefix).toRegex(), "")
                 .split(" ").toTypedArray();
         val invoke = split[0].toLowerCase()
         val cmd = getCommand(invoke)
