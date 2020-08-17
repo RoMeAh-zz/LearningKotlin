@@ -13,10 +13,12 @@ import java.util.regex.Pattern
 
 class CommandHandler() {
     private val commands: MutableList<BaseCommand> = ArrayList()
-    private fun addCommand(cmd: BaseCommand) {
-        val nameFound = commands.stream().anyMatch { it.name() == (cmd.name()) }
-        require(!nameFound) { "A command with this name is already present" }
-        commands.add(cmd)
+    fun addCommand(vararg cmd: BaseCommand) {
+        for(each in cmd) {
+            val nameFound = commands.stream().anyMatch { it.name() == each.name() }
+            require(!nameFound) { "A command with this name is already present" }
+            commands.add(each)
+        }
     }
 
     private fun getCommand(search: String): BaseCommand? {
@@ -41,13 +43,6 @@ class CommandHandler() {
             val ctx = CommandContext(event, args)
             cmd.handle(ctx)
         }
-    }
-
-    fun init() {
-        addCommand(Ping())
-        addCommand(Join())
-        addCommand(Leave())
-        addCommand(Play())
     }
 }
 

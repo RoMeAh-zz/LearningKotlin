@@ -7,30 +7,33 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 
 class MessageCollector {
-    var INSTANCE: MessageCollector? = null
     lateinit var channel: TextChannel
     lateinit var user: User
+    lateinit var EVENTINSTANCE: MessageCollectorEvent
     fun start() {
-        Bot.sharder.addEventListener(MessageCollectorEvent(channel, user))
+        Bot.sharder.addEventListener(this.EVENTINSTANCE)
     }
     fun stop(): HashMap<Long, String> {
-        Bot.sharder.removeEventListener(MessageCollectorEvent(channel, user))
+        Bot.sharder.removeEventListener(this.EVENTINSTANCE)
         collected.forEach { (t, u) -> println("MessageID: $t, Message Content: $u") }
         INSTANCE = null
         return collected
     }
-    fun instance(channel: TextChannel, user: User): MessageCollector {
-        if(this.INSTANCE == null) {
-            val init = MessageCollector()
-            init.user = user
-            init.channel = channel
-            this.INSTANCE = init
-        }
-        return this.INSTANCE!!
-    }
 
     companion object {
-        public var collected: HashMap<Long, String> = HashMap()
+        var collected: HashMap<Long, String> = HashMap()
+        private var INSTANCE: MessageCollector? = null
+
+        fun instance(channel: TextChannel, user: User): MessageCollector {
+            if(this.INSTANCE == null) {
+                val init = MessageCollector()
+                init.user = user
+                init.channel = channel
+                init.EVENTINSTANCE = MessageCollectorEvent(init.channel, init.user)
+                this.INSTANCE = init
+            }
+            return this.INSTANCE!!
+        }
     }
 }
 
@@ -40,7 +43,7 @@ class MessageCollectorEvent(private val channel: TextChannel, private val user: 
             MessageCollector.collected[event.messageIdLong] = event.message.contentRaw
             println("Collected")
             if(event.message.contentRaw == "stop")
-           MessageCollector().instance(channel, user).stop()
+           MessageCollector.instance(channel, user).stop()
         }
     }
 }
