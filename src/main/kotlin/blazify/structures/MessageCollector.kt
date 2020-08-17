@@ -15,11 +15,11 @@ class MessageCollector {
     }
     fun stop(): HashMap<Long, String> {
         Bot.sharder.removeEventListener(MessageCollectorEvent(channel, user))
-        collected.forEach { t, u -> println("MessageID: $t, Message Content: $u") }
+        collected.forEach { (t, u) -> println("MessageID: $t, Message Content: $u") }
         INSTANCE = null
         return collected
     }
-    fun newInstance(channel: TextChannel, user: User): MessageCollector {
+    fun instance(channel: TextChannel, user: User): MessageCollector {
         if(this.INSTANCE == null) {
             val init = MessageCollector()
             init.user = user
@@ -40,7 +40,7 @@ class MessageCollectorEvent(private val channel: TextChannel, private val user: 
             MessageCollector.collected[event.messageIdLong] = event.message.contentRaw
             println("Collected")
             if(event.message.contentRaw == "stop")
-           MessageCollector().newInstance(channel, user).stop()
+           MessageCollector().instance(channel, user).stop()
         }
     }
 }
