@@ -1,35 +1,15 @@
 package blazify.command.commands.music
 
+import blazify.Listener
+import blazify.structures.YoutubeAPI
 import blazify.command.BaseCommand
 import blazify.command.CommandContext
 import blazify.lavaplayer.PlayerManager
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
-import com.google.api.client.json.jackson2.JacksonFactory
-import com.google.api.services.youtube.YouTube
-import com.google.api.services.youtube.model.SearchResult
-import java.net.MalformedURLException
-import java.net.URL
 
 
-class Play: BaseCommand {
-    private var youTube: YouTube? = null
-    init {
-        var temp: YouTube? = null
-        try {
-            temp = YouTube.Builder(
-                    GoogleNetHttpTransport.newTrustedTransport(),
-                    JacksonFactory.getDefaultInstance(),
-                    null
-            )
-                    .setApplicationName("Blazify")
-                    .build()
-        } catch (e: java.lang.Exception) {
-            e.printStackTrace()
-        }
-        youTube = temp
-    }
+class Play() : BaseCommand {
     override fun handle(ctx: CommandContext) {
-        if (ctx.args()[1].isEmpty()) {
+        if (ctx.args().size == 2) {
             ctx.channel.sendMessage("Please Provide a Music to be Played...").queue()
             return
         }
@@ -41,47 +21,16 @@ class Play: BaseCommand {
             ctx.channel.sendMessage("I'm not in any Voice Channel... Please use the join command.").queue()
             return;
         }
-        if (!isUrl(ctx.args()[1])) {
-            val ytSearched = searchYoutube(ctx.args()[1])
-            if (ytSearched == null) {
-                ctx.channel.sendMessage("Youtube returned no results").queue()
-                return
-            }
-            ctx.args()[1] = ytSearched
-        }
-
-        PlayerManager().instance()?.loadAndPlay(ctx.channel, ctx.args()[1])
-    }
-
-    private fun isUrl(input: String): Boolean {
-        return try {
-            URL(input)
-            true
-        } catch (ignored: MalformedURLException) {
-            false
+        if(YoutubeAPI().isUrl(ctx.args()[1])) {
+            PlayerManager().instance()?.loadAndPlay(ctx.channel, ctx.args()[1])
+        } else {
+            val ytSearched: String = YoutubeAPI().searchYoutube(ctx.args()[0])?.get(0)?.id?.videoId !!
+            ctx.args()[1] = "https://www.youtube.com/watch?v=${ytSearched}"
+            Listener.LOGGER.info(ctx.args()[1])
+            PlayerManager().instance()?.loadAndPlay(ctx.channel, ctx.args()[1])
         }
     }
 
-    private fun searchYoutube(input: String): String? {
-        try {
-            val results: List<SearchResult> = youTube?.search()
-                    ?.list("id,snippet")
-                    ?.setQ(input)
-                    ?.setMaxResults(1L)
-                    ?.setType("video")
-                    ?.setFields("items(id/kind,id/videoId,snippet/title,snippet/thumbnails/default/url)")
-                    ?.setKey(Config.ytApiKey)
-                    ?.execute()
-                    ?.items!!
-            if (results.isNotEmpty()) {
-                val videoId: String = results[0].id.videoId
-                return "https://www.youtube.com/watch?v=$videoId"
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        return null
-    }
     override fun name(): String {
         return "play"
     }

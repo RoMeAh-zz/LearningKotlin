@@ -20,7 +20,7 @@ class TrackScheduler(player: AudioPlayer?): AudioEventAdapter() {
     }
 
     fun queue(track: AudioTrack?) {
-        if(this.player.startTrack(track, true)) {
+        if(!this.player.startTrack(track, true)) {
             this.queue.offer(track);
         }
     }
@@ -38,10 +38,8 @@ class TrackScheduler(player: AudioPlayer?): AudioEventAdapter() {
 
     override fun onTrackEnd(player: AudioPlayer?, track: AudioTrack?, endReason: AudioTrackEndReason?) {
         if (endReason != null) {
-            if(endReason.mayStartNext) {
+            if (endReason.mayStartNext) {
                 nextTrack()
-            } else if(this.queue.size == 0) {
-                this.player.destroy()
             }
         }
     }

@@ -7,11 +7,12 @@ import blazify.command.CommandContext
 import blazify.command.commands.music.Join
 import blazify.command.commands.music.Leave
 import blazify.command.commands.music.Play
+import blazify.command.commands.utility.Test
 import java.util.*
 import java.util.regex.Pattern
 
 
-class CommandHandler {
+class CommandHandler() {
     private val commands: MutableList<BaseCommand> = ArrayList()
     private fun addCommand(cmd: BaseCommand) {
         val nameFound = commands.stream().anyMatch { it.name() == (cmd.name()) }
@@ -48,6 +49,7 @@ class CommandHandler {
         addCommand(Join())
         addCommand(Leave())
         addCommand(Play())
+        addCommand(Test())
     }
 }
 

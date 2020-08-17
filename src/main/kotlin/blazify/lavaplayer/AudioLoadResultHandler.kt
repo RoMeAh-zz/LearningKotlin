@@ -8,7 +8,7 @@ import net.dv8tion.jda.api.entities.TextChannel
 
 class AudioLoadResultHandler(var musicManager: GuildMusicManager, var channel: TextChannel): AudioLoadResultHandler {
     override fun loadFailed(exception: FriendlyException?) {
-        channel.sendMessage("Whoops something went wrong ${exception}.. Please contact the developers")
+        return channel.sendMessage("Whoops something went wrong ${exception}.. Please contact the developers").queue()
     }
 
     override fun trackLoaded(track: AudioTrack?) {
@@ -24,13 +24,13 @@ class AudioLoadResultHandler(var musicManager: GuildMusicManager, var channel: T
     }
 
     override fun noMatches() {
-        channel.sendMessage("Sorry i couldn't find any track by the given information")
+        channel.sendMessage("Sorry i couldn't find any track by the given information").queue()
     }
 
     override fun playlistLoaded(playlist: AudioPlaylist?) {
         if (playlist != null) {
             playlist.tracks.forEach{ musicManager.scheduler.queue(it) }
-            channel.sendMessage("Queued a ${playlist.name} with ${playlist.tracks.size}")
+            channel.sendMessage("Queued a ${playlist.name} with ${playlist.tracks.size}").queue()
         }
     }
 
