@@ -5,6 +5,10 @@ import blazify.structures.YoutubeAPI
 import blazify.command.BaseCommand
 import blazify.command.CommandContext
 import blazify.lavaplayer.PlayerManager
+import blazify.structures.IMessageCollectorListener
+import blazify.structures.MessageCollector
+import blazify.structures.MessageCollectorListener
+import com.google.api.services.youtube.model.SearchResult
 
 
 class Play() : BaseCommand {
@@ -22,15 +26,15 @@ class Play() : BaseCommand {
             return;
         }
         if(YoutubeAPI().isUrl(ctx.args()[1])) {
-            PlayerManager().instance()?.loadAndPlay(ctx.channel, ctx.args()[1])
+            PlayerManager.instance()?.loadAndPlay(ctx.channel, ctx.args()[1])
         } else {
-            val ytSearched: String = YoutubeAPI().searchYoutube(ctx.args()[0])?.get(0)?.id?.videoId !!
-            ctx.args()[1] = "https://www.youtube.com/watch?v=${ytSearched}"
+            val ytSearched: List<SearchResult>? = YoutubeAPI().searchYoutube(ctx.args()[0])
+            ctx.channel.sendMessage(ytSearched.toString()).queue()
+            ctx.args()[1] = "https://www.youtube.com/watch?v=${ytSearched?.get(0)?.id?.videoId}"
             Listener.LOGGER.info(ctx.args()[1])
-            PlayerManager().instance()?.loadAndPlay(ctx.channel, ctx.args()[1])
+            PlayerManager.instance()?.loadAndPlay(ctx.channel, ctx.args()[1])
         }
     }
-
     override fun name(): String {
         return "play"
     }

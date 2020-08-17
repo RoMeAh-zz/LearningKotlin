@@ -7,7 +7,6 @@ import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.TextChannel
 
 class PlayerManager {
-    private var INSTANCE: PlayerManager? = null;
     private var musicManagers: MutableMap<Long, GuildMusicManager> = HashMap()
     private var audioPlayerManager: AudioPlayerManager = DefaultAudioPlayerManager()
 
@@ -28,11 +27,13 @@ class PlayerManager {
         val musicManager: GuildMusicManager = this.musicManager(channel.guild)
         this.audioPlayerManager.loadItemOrdered(musicManager, trackUrl, AudioLoadResultHandler(musicManager, channel))
     }
-
+companion object {
+    private var INSTANCE: PlayerManager? = null;
     fun instance(): PlayerManager? {
-        if(INSTANCE == null) {
+        if (INSTANCE == null) {
             INSTANCE = PlayerManager()
         }
         return INSTANCE;
     }
+}
 }
