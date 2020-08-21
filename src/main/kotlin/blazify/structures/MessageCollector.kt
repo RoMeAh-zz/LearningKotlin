@@ -1,6 +1,7 @@
 package blazify.structures
 
 import blazify.Bot
+import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.entities.TextChannel
 import net.dv8tion.jda.api.entities.User
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
@@ -15,6 +16,7 @@ class MessageCollector {
     lateinit var user: User
     lateinit var EVENTINSTANCE: MessageCollectionEvent
     var listener: MessageCollectorListener = MessageCollectorListener()
+    var collected: HashMap<Long, String> = HashMap()
 
     fun start() {
         Bot.sharder.addEventListener(this.EVENTINSTANCE)
@@ -22,20 +24,18 @@ class MessageCollector {
 
     fun stop(): HashMap<Long, String> {
         Bot.sharder.removeEventListener(this.EVENTINSTANCE)
-        collected.forEach { (t, u) -> println("MessageID: $t, Message Content: $u") }
         INSTANCE = null
         return collected
     }
 
     companion object {
-        var collected: HashMap<Long, String> = HashMap()
         private var INSTANCE: MessageCollector? = null
 
-        fun instance(channel: TextChannel, user: User): MessageCollector {
+        fun instance(channel: TextChannel? = null, user: User? = null): MessageCollector {
             if(this.INSTANCE == null) {
                 val init = MessageCollector()
-                init.user = user
-                init.channel = channel
+                init.user = user!!
+                init.channel = channel!!
                 init.EVENTINSTANCE = MessageCollectionEvent(init.channel, init.user)
                 this.INSTANCE = init
             }
@@ -47,14 +47,14 @@ class MessageCollector {
 class MessageCollectionEvent(private val channel: TextChannel, private val user: User): ListenerAdapter() {
     override fun onGuildMessageReceived(event: GuildMessageReceivedEvent) {
         if(event.channel == channel && event.author == user) {
-            MessageCollector.collected[event.messageIdLong] = event.message.contentRaw
-            MessageCollector().listener.addMessage(MessageCollector.collected)
+            MessageCollector.instance().collected[event.messageIdLong] = event.message.contentRaw
+            MessageCollector.instance().listener.emit(event.message.contentRaw, MessageCollector.instance().collected)
         }
     }
 }
 
 interface IMessageCollectorListener {
-    fun onMessageCollected(map: HashMap<Long, String>);
+    fun onMessageCollected(message: String, map: HashMap<Long, String>);
 }
 
 class MessageCollectorListener {
@@ -63,7 +63,7 @@ class MessageCollectorListener {
         listeners.add(listener)
     }
 
-    fun addMessage(map: HashMap<Long, String>) {
-        for (it in listeners) it.onMessageCollected(map)
+    fun emit(message: String, map: HashMap<Long, String>) {
+        listeners.forEach { it.onMessageCollected(message, map) }
     }
 }
